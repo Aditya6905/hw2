@@ -1,0 +1,2 @@
+class MoviesUpdated < ApplicationRecord
+end

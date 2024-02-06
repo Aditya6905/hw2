@@ -70,12 +70,12 @@
 # Delete existing data, so you'll start fresh each time this script is run.
 # Use `Model.destroy_all` code.
 Studio.destroy_all
-Movie.destroy_all
+MoviesUpdated.destroy_all
 Actor.destroy_all
 Role.destroy_all
 
 # Generate models and tables, according to the domain model.
-# TODO!
+# Aditya CMT: Done through model generation, editing the migration files and then db:migrate
 
 # Insert data into the database that reflects the sample data shown above.
 # Do not use hard-coded foreign key IDs.
@@ -84,9 +84,11 @@ Role.destroy_all
 warner_bros = Studio.create(name: "Warner Bros.")
 
 #Adding data to movies
-batman_begins = Movie.create(title: "Batman Begins", year_released: 2005, rated: "PG-13", studio_id: 1)
-the_dark_knight = Movie.create(title: "The Dark Knight", year_released: 2008, rated: "PG-13", studio_id: 1)
-the_dark_knight_rises = Movie.create(title: "The Dark Knight Rises", year_released: 2012, rated: "PG-13", studio_id: 1)
+batman_begins = MoviesUpdated.create(title: "Batman Begins", year_released: 2005, rated: "PG-13", studio_name: "Warner Bros.")
+the_dark_knight = MoviesUpdated.create(title: "The Dark Knight", year_released: 2008, rated: "PG-13", studio_name: "Warner Bros.")
+the_dark_knight_rises = MoviesUpdated.create(title: "The Dark Knight Rises", year_released: 2012, rated: "PG-13", studio_name: "Warner Bros.")
+# Created a seperate model MoviesUpdated, as I was not able to modify the movie model I created earlier
+
 
 #Adding data to actors
 christian_bale = Actor.create(name: "Christian Bale")
@@ -101,22 +103,23 @@ tom_hardy = Actor.create(name: "Tom Hardy")
 joseph_gordon_levitt = Actor.create(name: "Joseph Gordon-Levitt")
 anne_hathaway = Actor.create(name: "Anne Hathaway")
 
-#Adding data to roles
-bruce_wayne = Role.create(movie_id: 1, actor_id:1 , character_name: "Bruce Wayne")
-alfred = Role.create(movie_id: 1, actor_id:2 , character_name: "Alfred")
-ral_ghul = Role.create(movie_id: 1, actor_id:3 , character_name: "Ra's Al Ghul")
-rachel_dawes = Role.create(movie_id: 1, actor_id:4 , character_name: "Rachel Dawes")
-gordon = Role.create(movie_id: 1, actor_id:5 , character_name: "Commissioner Gordon")
-bruce_wayne = Role.create(movie_id: 2, actor_id:1 , character_name: "Bruce Wayne")
-joker = Role.create(movie_id: 2, actor_id:6 , character_name: "Joker")
-dent = Role.create(movie_id: 2, actor_id:7 , character_name: "Harvey Dent")
-alfred = Role.create(movie_id: 2, actor_id:2 , character_name: "Alfred")
-rachel_dawes = Role.create(movie_id: 2, actor_id:8 , character_name: "Rachel Dawes")
-bruce_wayne = Role.create(movie_id: 3, actor_id:1 , character_name: "Bruce Wayne")
-gordon = Role.create(movie_id: 3, actor_id:5 , character_name: "Commissioner Gordon")
-bane = Role.create(movie_id: 3, actor_id:9 , character_name: "Bane")
-john = Role.create(movie_id: 3, actor_id:10 , character_name: "John Blake")
-selina = Role.create(movie_id: 3, actor_id:11 , character_name: "Selina Kyle")
+#Adding data to roles using dynamic foreign keys
+bruce_wayne = Role.create(movie_id: MoviesUpdated.find_by({"title" => "Batman Begins"})["id"], actor_id: Actor.find_by({"name" => "Christian Bale"})["id"] , character_name: "Bruce Wayne")
+alfred = Role.create(movie_id: MoviesUpdated.find_by({"title" => "Batman Begins"})["id"], actor_id: Actor.find_by({"name" => "Michael Caine"})["id"] , character_name: "Alfred")
+ral_ghul = Role.create(movie_id: MoviesUpdated.find_by({"title" => "Batman Begins"})["id"], actor_id:Actor.find_by({"name" => "Liam Neeson"})["id"]  , character_name: "Ra's Al Ghul")
+rachel_dawes = Role.create(movie_id: MoviesUpdated.find_by({"title" => "Batman Begins"})["id"], actor_id: Actor.find_by({"name" => "Katie Holmes"})["id"] , character_name: "Rachel Dawes")
+gordon = Role.create(movie_id: MoviesUpdated.find_by({"title" => "Batman Begins"})["id"], actor_id: Actor.find_by({"name" => "Gary Oldman"})["id"] , character_name: "Commissioner Gordon")
+bruce_wayne = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight"})["id"], actor_id: Actor.find_by({"name" => "Christian Bale"})["id"] , character_name: "Bruce Wayne")
+joker = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight"})["id"], actor_id: Actor.find_by({"name" => "Heath Ledger"})["id"] , character_name: "Joker")
+dent = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight"})["id"], actor_id: Actor.find_by({"name" => "Aaron Eckhart"})["id"] , character_name: "Harvey Dent")
+alfred = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight"})["id"], actor_id: Actor.find_by({"name" => "Michael Caine"})["id"]  , character_name: "Alfred")
+rachel_dawes = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight"})["id"], actor_id: Actor.find_by({"name" => "Maggie Gyllenhaal"})["id"] , character_name: "Rachel Dawes")
+bruce_wayne = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight Rises"})["id"], actor_id: Actor.find_by({"name" => "Christian Bale"})["id"] , character_name: "Bruce Wayne")
+gordon = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight Rises"})["id"], actor_id: Actor.find_by({"name" => "Maggie Gyllenhaal"})["id"] , character_name: "Commissioner Gordon")
+bane = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight Rises"})["id"], actor_id: Actor.find_by({"name" => "Tom Hardy"})["id"] , character_name: "Bane")
+john = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight Rises"})["id"], actor_id: Actor.find_by({"name" => "Joseph Gordon-Levitt"})["id"] , character_name: "John Blake")
+selina = Role.create(movie_id: MoviesUpdated.find_by({"title" => "The Dark Knight Rises"})["id"], actor_id: Actor.find_by({"name" => "Anne Hathaway"})["id"] , character_name: "Selina Kyle")
+
 
 
 # Prints a header for the movies output
@@ -125,10 +128,10 @@ puts "======"
 puts ""
 
 # Query the movies data and loop through the results to display the movies output.
-movies = Movie.all
+movies = MoviesUpdated.all
 
-movies.each do |movies|
-    puts "#{movies.title}, #{movies.year_released}, #{movies.rated}, #{movies.studio_id}" 
+for movies in movies
+      puts "#{movies.title}, #{movies.year_released}, #{movies.rated}, #{movies.studio_name}" 
   end
 
 # Prints a header for the cast output
@@ -138,11 +141,15 @@ puts "========"
 puts ""
 
 # Query the cast data and loop through the results to display the cast output for each movie.
-movies.each do |movies|
-    puts "#{movies.title}"
-    movies.actors.each do |actors|
-      # Assuming the character name is stored as an attribute of the join model between movies and actors
-      character_name = movies.characters.find_by(actor_id: actor.id).name
-      puts "#{actors.name.ljust(22)} #{character_name}"
-    end
-  end
+
+cast = Role.all
+for cast in cast
+  # puts "#{cast.movie_id}"
+  movie = MoviesUpdated.find_by(id: cast.movie_id)
+  # puts "Movie: #{movie.title}" if movie
+  actor = Actor.find_by(id: cast.actor_id)
+  # puts "Actor Name: #{actor.name}" if actor
+
+  puts "#{movie.title}, #{actor.name}, #{cast.character_name}" 
+  # actor.name
+end
